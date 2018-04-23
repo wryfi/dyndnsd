@@ -28,3 +28,7 @@
 [[constraint]]
   branch = "master"
   name = "github.com/mitchellh/go-homedir"
+
+[[constraint]]
+  name = "github.com/miekg/dns"
+  version = "1.0.5"

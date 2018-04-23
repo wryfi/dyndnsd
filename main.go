@@ -3,13 +3,15 @@ package main
 import (
 	"fmt"
 	"log"
+	"net"
 	"net/http"
+	"os"
 	"path/filepath"
+	"strings"
 
+	"github.com/miekg/dns"
 	"github.com/mitchellh/go-homedir"
 	"github.com/spf13/viper"
-	"strings"
-	"net"
 )
 
 
@@ -43,7 +45,8 @@ func updateHandler(response http.ResponseWriter, request *http.Request) {
 				var address net.IP
 				xff := request.Header.Get("X-Forwarded-For")
 				if len(xff) > 0 {
-					address = net.ParseIP(xff)
+					addresses := strings.Split(xff, ",")
+					address = net.ParseIP(addresses[0])
 				} else {
 					address = net.ParseIP(strings.Split(request.RemoteAddr, ":")[0])
 				}
@@ -55,6 +58,10 @@ func updateHandler(response http.ResponseWriter, request *http.Request) {
 			}
 		}
 		log.Println(requestParams)
+		if viper.GetString("updater.name") == "zonefile" {
+			log.Println("updating zonefile")
+			updateZoneFile(requestParams)
+		}
 	} else {
 		log.Println("empty parameters")
 	}
@@ -90,4 +97,22 @@ func processUrlParams(response http.ResponseWriter, request *http.Request) map[s
 	return params
 }
 
-
+func updateZoneFile(params map[string]string) {
+	zonefile := viper.GetString("updater.params.zone_file")
+	domain := viper.GetString("domain")
+	if _, err := os.Stat(zonefile); err == nil {
+		log.Printf("found zonefile %s", zonefile)
+		zfile, err := os.Open(zonefile)
+		defer zfile.Close()
+		if err == nil {
+			log.Println("parsing zonefile")
+			for token := range dns.ParseZone(zfile, domain, zonefile) {
+				if token.Error != nil {
+					log.Println(token.Error)
+				} else {
+					fmt.Println(token.RR)
+				}
+			}
+		}
+	}
+}
