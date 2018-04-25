@@ -2,6 +2,18 @@
 
 
 [[projects]]
+  name = "github.com/codegangsta/inject"
+  packages = ["."]
+  revision = "37d7f8432a3e684eef9b2edece76bdfa6ac85b39"
+  version = "v1.0-rc1"
+
+[[projects]]
+  name = "github.com/codeskyblue/go-sh"
+  packages = ["."]
+  revision = "b097669b1569203c3ce05a6b8717d43140fdb3d5"
+  version = "0.2"
+
+[[projects]]
   name = "github.com/fsnotify/fsnotify"
   packages = ["."]
   revision = "c2828203cd70a50dcccfb2761f8b1f8ceef9a8e9"
@@ -106,6 +118,6 @@
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "c47ebed1b6b9debda4f136c134d4b3d70bbec9a72bfc722cf831cbf5eadc0369"
+  inputs-digest = "50f16f9f7a70eb93b7611993fa021362b1ca9e4232560e5cb727267ca0d45965"
   solver-name = "gps-cdcl"
   solver-version = 1
