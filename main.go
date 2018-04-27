@@ -164,24 +164,20 @@ func updateExistingZone(zonefile string, domain string, params map[string]string
 		if header.Rrtype == dns.TypeSOA {
 			typeRecord := record.(*dns.SOA)
 			typeRecord.Serial = incrementSerial(typeRecord.Serial)
-			newRecords = append(newRecords, record)
 		} else if header.Rrtype == dns.TypeA && header.Name == params["hostname"] {
 			foundA = true
 			if _, ok := params["ip4"]; ok {
 				typeRecord := record.(*dns.A)
 				typeRecord.A = net.ParseIP(params["ip4"])
 			}
-			newRecords = append(newRecords, record)
 		} else if header.Rrtype == dns.TypeAAAA && header.Name == params["hostname"] {
 			found6A = true
 			if _, ok := params["ip6"]; ok {
 				typeRecord := record.(*dns.AAAA)
 				typeRecord.AAAA = net.ParseIP(params["ip6"])
 			}
-			newRecords = append(newRecords, record)
-		} else {
-			newRecords = append(newRecords, record)
 		}
+		newRecords = append(newRecords, record)
 	}
 	if !foundA {
 		if _, ok := params["ip4"]; ok {
